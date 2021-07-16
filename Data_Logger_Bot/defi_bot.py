@@ -93,7 +93,10 @@ connection = create_connection("data.sqlite")
 createTable(connection)
 
 url = "https://dappradar.com/rankings/category/defi"
-driver = webdriver.Firefox(executable_path = "C:/Users/vaidehi/Downloads/geckodriver.exe")
+#Uncomment for Windows/Comment for Linux
+#driver = webdriver.Firefox(executable_path = "C:/Users/vaidehi/Downloads/geckodriver.exe")
+#Uncomment for Linux/Comment for Windows
+driver = webdriver.Firefox(executable_path = "/home/vinay/Downloads/geckodriver")
 driver.get(url)
 
 try:
