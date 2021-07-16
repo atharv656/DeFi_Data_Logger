@@ -26,7 +26,7 @@ def strToNum(string):
 class Coin:
     def __init__(self, rank, name, chain, balance, users, dailyChangeInPrice, volume):
         self.rank = rank
-        self.name = name
+        self.name = re.sub("NEW", "", name)
         self.balance = round(strToNum(re.sub("\$","",balance)))
         self.chain = chain
         self.users = round(strToNum(users))
@@ -96,34 +96,37 @@ url = "https://dappradar.com/rankings/category/defi"
 #Uncomment for Windows/Comment for Linux
 #driver = webdriver.Firefox(executable_path = "C:/Users/vaidehi/Downloads/geckodriver.exe")
 #Uncomment for Linux/Comment for Windows
-driver = webdriver.Firefox(executable_path = "/home/vinay/Downloads/geckodriver")
-driver.get(url)
-time.sleep(1)
+# driver = webdriver.Firefox(executable_path = "/home/vinay/Downloads/geckodriver")
 
 try:
     while True:
-        results = driver.find_elements_by_xpath("//*[@id='root']//*[@class='rankings-table']//*[@class='rankings-row']")
-        data = []
+        counter = 0
+        driver.get(url)
+        time.sleep(1)
+        for i in range(4):
+            results = driver.find_elements_by_xpath("//*[@id='root']//*[@class='rankings-table']//*[@class='rankings-row']")
+            current_datetime = datetime.datetime.now()
+            date = current_datetime.strftime("%x")
+            currentTime = current_datetime.strftime("%X")
 
-        current_datetime = datetime.datetime.now()
-        date = current_datetime.strftime("%x")
-        currentTime = current_datetime.strftime("%X")
+            for result in results:
+                legible_Data = result.text
+                clean = legible_Data.splitlines()
+                # print(clean)
+                try:
+                    inp = Coin(int(clean[0]), clean[1], clean[3], clean[4], clean[5], clean[6], clean[7])
+                    addInfo(connection, inp, str(date), str(currentTime))
+                    # inp.displayCoin()
+                    counter = counter + 1
+                except ValueError as e:
+                    print(f"Error {e} occurred")
 
-        for result in results:
-            legible_Data = result.text
-            clean = legible_Data.splitlines()
-            # print(clean)
-            try:
-                inp = Coin(int(clean[0]), clean[1], clean[3], clean[4], clean[5], clean[6], clean[7])
-                addInfo(connection, inp, str(date), str(currentTime))
-                data.append(inp)
-                # inp.displayCoin()
-            except ValueError as e:
-                print(f"Error {e} occurred")
+            next_button = driver.find_element_by_partial_link_text("next")
+            print(next_button)
+            next_button.click()
 
-        print(len(data)," rows added")
-        driver.refresh()
-        time.sleep(3)
+        print(counter," rows added")
+        time.sleep(10)
 except KeyboardInterrupt:
     print("Quitting program...")
     driver.quit()
