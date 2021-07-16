@@ -98,11 +98,10 @@ url = "https://dappradar.com/rankings/category/defi"
 #Uncomment for Linux/Comment for Windows
 driver = webdriver.Firefox(executable_path = "/home/vinay/Downloads/geckodriver")
 driver.get(url)
+time.sleep(1)
 
 try:
     while True:
-        driver.refresh()
-        time.sleep(1)
         results = driver.find_elements_by_xpath("//*[@id='root']//*[@class='rankings-table']//*[@class='rankings-row']")
         data = []
 
@@ -123,7 +122,8 @@ try:
                 print(f"Error {e} occurred")
 
         print(len(data)," rows added")
-        time.sleep(10)
+        driver.refresh()
+        time.sleep(3)
 except KeyboardInterrupt:
     print("Quitting program...")
     driver.quit()
