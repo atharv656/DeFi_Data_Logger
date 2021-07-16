@@ -89,7 +89,7 @@ def addInfo(connection, coin, date, time):
     except Error as e:
         print(f"The error '{e}' occurred")
 
-connection = create_connection("C:\\Users\\vaidehi\\Documents\\Crypto\\data.sqlite")
+connection = create_connection("data.sqlite")
 createTable(connection)
 
 url = "https://dappradar.com/rankings/category/defi"
